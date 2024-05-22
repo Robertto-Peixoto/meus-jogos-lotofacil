@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogos Lotofácil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            text-align: center;
+            background-color: #fff;
+        }
+        .header {
+            width: 100%;
+            background-color: #7c3d94;
+            text-align: center;
+            padding: 0; /* Remove padding */
+            color: white;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px; /* Altura fixa para centralização */
+        }
+        .header h1 {
+            font-size: 96px; /* Aumenta o tamanho do texto */
+            margin: 0;
+            line-height: 1; /* Ajusta o espaçamento interno do texto */
+        }
+        .generator {
+            background-color: #505969;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            width: 200px;
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .jogo {
+            margin: 40px 20px 10px;
+            background-color: #fefec6;
+            border: 1px solid #505969;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .linha {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .quadrado-preto {
+            width: 10px;
+            height: 10px;
+            background-color: black;
+            margin-right: 5px;
+        }
+        .bolinhas {
+            display: flex;
+        }
+        .bolinha {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 15px;
+            border: 1px solid red;
+            background-color: white;
+        }
+        .pintada {
+            background-color: #7c3d94;
+            color: white;
+        }
+        .footer {
+            width: 100%;
+            background-color: #7c3d94;
+            height: 60px;
+            position: relative;
+            margin-top: 40px;
+        }
+        .coluna-topo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+        .coluna-topo .quadrado-preto {
+            margin: 0 45px; /* Espaçamento maior entre os quadrados */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>lotofácil</h1>
+        <button class="generator" id="generateButton" onclick="toggleGames()">GERAR JOGOS</button>
+    </div>
+    <div class="jogo" id="jogo1"></div>
+    <div class="jogo" id="jogo2"></div>
+    <div class="jogo" id="jogo3"></div>
+    <div class="footer"></div>
+
+    <script>
+        function generateGames() {
+            gerarJogo('jogo1', true);  // Apenas o primeiro jogo terá os quadradinhos no topo
+            gerarJogo('jogo2', false);
+            gerarJogo('jogo3', false);
+        }
+
+        function clearGames() {
+            limparJogo('jogo1', true);  // Apenas o primeiro jogo terá os quadradinhos no topo
+            limparJogo('jogo2', false);
+            limparJogo('jogo3', false);
+        }
+
+        function toggleGames() {
+            const button = document.getElementById('generateButton');
+            if (button.innerText.includes('GERAR JOGOS')) {
+                generateGames();
+                button.innerText = 'LIMPAR JOGOS';
+            } else {
+                clearGames();
+                button.innerText = 'GERAR JOGOS';
+            }
+        }
+
+        function gerarJogo(elementId, isFirst) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = ''; // Limpa o container antes de gerar um novo jogo
+            const todosNumeros = [
+                [21, 22, 23, 24, 25],
+                [16, 17, 18, 19, 20],
+                [11, 12, 13, 14, 15],
+                [6, 7, 8, 9, 10],
+                [1, 2, 3, 4, 5]
+            ];
+            const selecionados = new Set();
+
+            while (selecionados.size < 15) {
+                const coluna = Math.floor(Math.random() * 5);
+                const linha = Math.floor(Math.random() * 5);
+                selecionados.add(todosNumeros[coluna][linha]);
+            }
+
+            if (isFirst) {
+                const topoDiv = document.createElement('div');
+                topoDiv.classList.add('coluna-topo');
+                const quadradoPreto2 = document.createElement('div');
+                quadradoPreto2.classList.add('quadrado-preto');
+                const quadradoPreto3 = document.createElement('div');
+                quadradoPreto3.classList.add('quadrado-preto');
+                const quadradoPreto5 = document.createElement('div');
+                quadradoPreto5.classList.add('quadrado-preto');
+                topoDiv.appendChild(quadradoPreto2);
+                topoDiv.appendChild(quadradoPreto3);
+                topoDiv.appendChild(quadradoPreto5);
+                container.appendChild(topoDiv);
+            }
+
+            for (let linha = 0; linha < 5; linha++) {
+                const linhaDiv = document.createElement('div');
+                linhaDiv.classList.add('linha');
+
+                const quadradoPreto = document.createElement('div');
+                quadradoPreto.classList.add('quadrado-preto');
+                linhaDiv.appendChild(quadradoPreto);
+
+                const bolinhasDiv = document.createElement('div');
+                bolinhasDiv.classList.add('bolinhas');
+
+                for (let coluna = 0; coluna < 5; coluna++) {
+                    const numero = todosNumeros[coluna][linha];
+                    const div = document.createElement('div');
+                    div.classList.add('bolinha');
+                    if (selecionados.has(numero)) {
+                        div.classList.add('pintada');
+                    }
+                    div.textContent = numero;
+                    bolinhasDiv.appendChild(div);
+                }
+
+                linhaDiv.appendChild(bolinhasDiv);
+                container.appendChild(linhaDiv);
+            }
+        }
+
+        function limparJogo(elementId, isFirst) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = ''; // Limpa o container
+            const todosNumeros = [
+                [21, 22, 23, 24, 25],
+                [16, 17, 18, 19, 20],
+                [11, 12, 13, 14, 15],
+                [6, 7, 8, 9, 10],
+                [1, 2, 3, 4, 5]
+            ];
+
+            if (isFirst) {
+                const topoDiv = document.createElement('div');
+                topoDiv.classList.add('coluna-topo');
+                const quadradoPreto2 = document.createElement('div');
+                quadradoPreto2.classList.add('quadrado-preto');
+                const quadradoPreto3 = document.createElement('div');
+                quadradoPreto3.classList.add('quadrado-preto');
+                const quadradoPreto5 = document.createElement('div');
+                quadradoPreto5.classList.add('quadrado-preto');
+                topoDiv.appendChild(quadradoPreto2);
+                topoDiv.appendChild(quadradoPreto3);
+                topoDiv.appendChild(quadradoPreto5);
+                container.appendChild(topoDiv);
+            }
+
+            for (let linha = 0; linha < 5; linha++) {
+                const linhaDiv = document.createElement('div');
+                linhaDiv.classList.add('linha');
+
+                const quadradoPreto = document.createElement('div');
+                quadradoPreto.classList.add('quadrado-preto');
+                linhaDiv.appendChild(quadradoPreto);
+
+                const bolinhasDiv = document.createElement('div');
+                bolinhasDiv.classList.add('bolinhas');
+
+                for (let coluna = 0; coluna < 5; coluna++) {
+                    const numero = todosNumeros[coluna][linha];
+                    const div = document.createElement('div');
+                    div.classList.add('bolinha');
+                    div.textContent = numero;
+                    bolinhasDiv.appendChild(div);
+                }
+
+                linhaDiv.appendChild(bolinhasDiv);
+                container.appendChild(linhaDiv);
+            }
+        }
+
+        // Gerar jogos iniciais ao carregar a página
+        window.onload = generateGames;
+    </script>
+</body>
+</html>
