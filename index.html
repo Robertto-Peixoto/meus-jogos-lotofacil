@@ -14,23 +14,23 @@
             margin: 0;
             text-align: center;
             background-color: #fff;
+            height: 100vh;
         }
         .header {
             width: 100%;
             background-color: #7c3d94;
             text-align: center;
-            padding: 0; /* Remove padding */
             color: white;
             position: relative;
-            display: flex;
+            display: none; /* Escondido por padrão */
             align-items: center;
             justify-content: center;
-            height: 100px; /* Altura fixa para centralização */
+            height: 100px;
         }
         .header h1 {
-            font-size: 96px; /* Aumenta o tamanho do texto */
+            font-size: 96px;
             margin: 0;
-            line-height: 1; /* Ajusta o espaçamento interno do texto */
+            line-height: 1;
         }
         .generator {
             background-color: #505969;
@@ -51,7 +51,7 @@
             background-color: #fefec6;
             border: 1px solid #505969;
             padding: 10px;
-            display: flex;
+            display: none; /* Escondido por padrão */
             flex-direction: column;
             align-items: center;
         }
@@ -89,6 +89,7 @@
             height: 60px;
             position: relative;
             margin-top: 40px;
+            display: none; /* Escondido por padrão */
         }
         .coluna-topo {
             display: flex;
@@ -96,7 +97,7 @@
             margin-bottom: 5px;
         }
         .coluna-topo .quadrado-preto {
-            margin: 0 45px; /* Espaçamento maior entre os quadrados */
+            margin: 0 45px;
         }
         .login-container {
             background-color: #fff;
@@ -105,6 +106,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            box-sizing: border-box;
         }
         .login-container h1 {
             color: #74408f;
@@ -131,6 +138,7 @@
             color: #fff;
             border: none;
             cursor: pointer;
+            font-size: 20px; /* Aumenta o tamanho do texto "Entrar" */
         }
         .login-container button:hover {
             background-color: #5d3472;
@@ -141,78 +149,57 @@
             display: block;
             margin: 10px 0;
         }
-        .hidden {
-            display: none;
-        }
     </style>
     <!-- Firebase App (the core Firebase SDK) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js"></script>
     <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyCf-w94PlAR_fncSe0mFi7dtCJMPbxVajI",
-            authDomain: "lotofacil-42548.firebaseapp.com",
-            projectId: "lotofacil-42548",
-            storageBucket: "lotofacil-42548.appspot.com",
-            messagingSenderId: "197175087153",
-            appId: "1:197175087153:web:d6dccbfd8099cc46300510",
-            measurementId: "G-LZWGM7B0KH"
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuração do Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyCf-w94PlAR_fncSe0mFi7dtCJMPbxVajI",
+                authDomain: "lotofacil-42548.firebaseapp.com",
+                projectId: "lotofacil-42548",
+                storageBucket: "lotofacil-42548.appspot.com",
+                messagingSenderId: "197175087153",
+                appId: "1:197175087153:web:d6dccbfd8099cc46300510",
+                measurementId: "G-LZWGM7B0KH"
+            };
 
-        // Inicializar o Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+            // Inicializar o Firebase
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
 
-        window.onload = function() {
-            document.querySelector('.login-container').style.display = 'block';
+            // Mostrar tela de login ao carregar a página
+            document.querySelector('.login-container').style.display = 'flex';
             document.querySelector('.header').style.display = 'none';
             document.querySelector('.footer').style.display = 'none';
             document.querySelectorAll('.jogo').forEach(el => el.style.display = 'none');
-        };
 
-        document.getElementById('login-button').addEventListener('click', () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            if (email && password) {
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(userCredential => {
-                        alert('Login realizado com sucesso!');
-                        document.querySelector('.login-container').style.display = 'none';
-                        document.querySelector('.header').style.display = 'flex';
-                        document.querySelector('.footer').style.display = 'block';
-                        document.querySelectorAll('.jogo').forEach(el => el.style.display = 'block');
-                    })
-                    .catch(error => {
-                        alert('Erro no login: ' + error.message);
-                    });
-            } else {
-                alert('Por favor, preencha todos os campos.');
-            }
+            // Função de login
+            document.getElementById('login-button').addEventListener('click', () => {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                if (email && password) {
+                    auth.signInWithEmailAndPassword(email, password)
+                        .then(userCredential => {
+                            alert('Login realizado com sucesso!');
+                            document.querySelector('.login-container').style.display = 'none';
+                            document.querySelector('.header').style.display = 'flex';
+                            document.querySelector('.footer').style.display = 'block';
+                            document.querySelectorAll('.jogo').forEach(el => el.style.display = 'flex');
+                            generateGames(); // Gerar jogos automaticamente após login
+                        })
+                        .catch(error => {
+                            alert('Erro no login: ' + error.message);
+                        });
+                } else {
+                    alert('Por favor, preencha todos os campos.');
+                }
+            });
         });
-    </script>
-</head>
-<body>
-    <div class="login-container">
-        <h1>Lotofácil</h1>
-        <p>Digite suas informações de login</p>
-        <input type="email" id="email" placeholder="E-mail" required>
-        <input type="password" id="password" placeholder="Senha" required>
-        <a href="#">Esqueceu sua senha?</a>
-        <button id="login-button">Entrar</button>
-        <p>Você não tem uma conta? <a href="#">Crie a sua conta aqui</a></p>
-    </div>
-    <div class="header">
-        <h1>lotofácil</h1>
-        <button class="generator" id="generateButton" onclick="toggleGames()">GERAR JOGOS</button>
-    </div>
-    <div class="jogo" id="jogo1"></div>
-    <div class="jogo" id="jogo2"></div>
-    <div class="jogo" id="jogo3"></div>
-    <div class="footer"></div>
 
-    <script>
         function generateGames() {
             gerarJogo('jogo1', true);  // Apenas o primeiro jogo terá os quadradinhos no topo
             gerarJogo('jogo2', false);
